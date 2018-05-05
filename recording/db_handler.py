@@ -24,7 +24,6 @@ class DynamoDB(object):
                     "AttributeType": "S(문자), N(숫자), B(바이너리)"
                 },
             ]
-
         """
         dynamodb = self.conn
 
@@ -140,10 +139,12 @@ class DynamoDB(object):
                 Key(pk).eq(pkv),
                 ExclusiveStartKey=start_key
             )
+            
     if not total_items:
         total_items = response['Items']
     else:
         total_items.extend(response['Items'])
+
     if response.get('LastEvaluatedKey'):
         start_key = response['LastEvaluatedKey']
         return_items = self.query_item(
@@ -152,5 +153,4 @@ class DynamoDB(object):
             start_key=start_key, table=table
         )
         return return_items
-    else:
-        return total_item
+    return total_item
