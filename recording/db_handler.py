@@ -26,7 +26,6 @@ class DynamoDB(object):
             ]
 
         """
-
         dynamodb = self.conn
 
         table_name = make_table_name(app_name, table_name)     
@@ -63,7 +62,7 @@ class DynamoDB(object):
             return True
         return False
 
-    def get_item(self, app_name:str, table_name:str, query_item:str):        
+    def get_item(self, app_name:str, table_name:str, query_item:Dict):        
         dynamodb = self.conn
 
         table_name = make_table_name(app_name, table_name)     
@@ -86,4 +85,17 @@ class DynamoDB(object):
             UpdateExpression=update_expr,
             ExpressionAttributeValues=expr_attr_values
         )
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return True
+        return False 
 
+    def delete_item(self, app_name:str, table_name:str, item_key:Dict):
+        dynamodb = self.conn 
+
+        table_name = make_table_name(app_name, table_name)
+        table = dynamodb.Table(table_name)
+
+        response = table.delete_item(Key=item_key)
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return True
+        return False 
