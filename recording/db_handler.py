@@ -10,11 +10,21 @@ class DynamoDB(object):
         self.conn = boto3.resource('dynamodb', region_name='ap-northeast-2')
 
     def create_table(
-            self, table_name, hash_dict, range_dict, attrs,
+            self, app_name, table_name, hash_dict, range_dict, attrs,
             read_throughput=5, write_throughput=5):
-        
+        """
+            attrs = [
+                {
+                    "AttributeName": String,
+                    "AttributeType": "S(문자), N(숫자), B(바이너리)"
+                },
+            ]
+
+        """
+
         dynamodb = self.conn
-        
+
+        table_name = '{}_{}'.format(app_name, table_name)        
         attrs += [hash_dict, range_dict]
 
         table = dynamodb.create_table(
