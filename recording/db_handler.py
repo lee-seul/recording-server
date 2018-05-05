@@ -3,7 +3,10 @@
 
 from typing import Dict, List
 
+from .utils import make_table_name, make_update_expr
+
 import boto3 
+from boto3.dynamodb.conditions import Key
 
 
 class DynamoDB(object):
@@ -26,7 +29,7 @@ class DynamoDB(object):
 
         dynamodb = self.conn
 
-        table_name = '{}_{}'.format(app_name, table_name)        
+        table_name = make_table_name(app_name, table_name)     
         attrs += [hash_dict, range_dict]
 
         table = dynamodb.create_table(
@@ -49,9 +52,10 @@ class DynamoDB(object):
             )
         return table
 
-    def insert_item(self, table_name:str, item:Dict):
+    def insert_item(self, app_name:str, table_name:str, item:Dict):
         dynamodb = self.conn 
 
+        table_name = make_table_name(app_name, table_name)     
         table = dynamodb.Table(table_name)
 
         response = table.put_item(Item=item)
@@ -59,12 +63,27 @@ class DynamoDB(object):
             return True
         return False
 
-    def get_item(self, table_name, query_item):        
+    def get_item(self, app_name:str, table_name:str, query_item:str):        
         dynamodb = self.conn
+
+        table_name = make_table_name(app_name, table_name)     
         table = dynamodb.Table(table_name)
 
-        response = table.get_item(key=query_item)
+        response = table.get_item(Key=query_item)
         item = response['Item']
         return item
 
-        
+    def update_item(self, app_name:str, table_name:str, key_dict:Dict, update_data:List):
+        dynamodb = self.conn
+
+        table_name = make_table_name(app_name, table_name)
+        table = dynamodb.Table(table_name)
+
+        update_expr, expr_attr_values = make_update_expr(update_data)
+
+        response = table.update_item(
+            Key=key_dict,
+            UpdateExpression=update_expr,
+            ExpressionAttributeValues=expr_attr_values
+        )
+
