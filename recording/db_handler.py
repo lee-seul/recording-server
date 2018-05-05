@@ -1,6 +1,8 @@
 # coding: utf-8
 
 
+from typing import Dict, List
+
 import boto3 
 
 
@@ -10,8 +12,8 @@ class DynamoDB(object):
         self.conn = boto3.resource('dynamodb', region_name='ap-northeast-2')
 
     def create_table(
-            self, app_name, table_name, hash_dict, range_dict, attrs,
-            read_throughput=5, write_throughput=5):
+            self, app_name:str, table_name:str, hash_dict:Dict, range_dict:Dict, attrs:List,
+            read_throughput:int=5, write_throughput:int=5):
         """
             attrs = [
                 {
@@ -47,4 +49,22 @@ class DynamoDB(object):
             )
         return table
 
+    def insert_item(self, table_name:str, item:Dict):
+        dynamodb = self.conn 
 
+        table = dynamodb.Table(table_name)
+
+        response = table.put_item(Item=item)
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return True
+        return False
+
+    def get_item(self, table_name, query_item):        
+        dynamodb = self.conn
+        table = dynamodb.Table(table_name)
+
+        response = table.get_item(key=query_item)
+        item = response['Item']
+        return item
+
+        
