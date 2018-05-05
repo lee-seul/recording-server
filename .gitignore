@@ -102,5 +102,5 @@ ENV/
 
 
 # Secret 
-/.aws
+/recording/.aws
 
