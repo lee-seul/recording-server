@@ -104,3 +104,4 @@ ENV/
 # chalice
 /recording/.chalice/deployments/
 /recording/.chalice/venv/
+/recording/.chalice/deployed/
