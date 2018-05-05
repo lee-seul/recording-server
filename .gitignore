@@ -104,3 +104,7 @@ ENV/
 # Secret 
 /recording/.aws
 
+
+# chalice
+/recording/.chalice/deployments/
+/recording/.chalice/venv/
