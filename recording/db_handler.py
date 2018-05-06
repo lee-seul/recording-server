@@ -11,7 +11,7 @@ from boto3.dynamodb.conditions import Key
 
 class DynamoDB(object):
 
-    def __init__(self, arg):
+    def __init__(self):
         self.conn = boto3.resource('dynamodb', region_name='ap-northeast-2')
 
     def create_table(
