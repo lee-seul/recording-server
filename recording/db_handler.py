@@ -105,6 +105,11 @@ class DynamoDB(object):
         return False 
 
     def query_item(self, app_name:str, table_name:str, partition_key:Dict):
+        dynamodb = self.conn
+
+        table_name = make_table_name(app_name, table_name)
+        table = dynamodb.Table(table_name)
+
         pk = partition_key['name']
         pkv = partition_key['value']
         response = table.query(
