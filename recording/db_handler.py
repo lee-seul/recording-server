@@ -15,8 +15,8 @@ class DynamoDB(object):
         self.conn = boto3.resource('dynamodb', region_name='ap-northeast-2')
 
     def create_table(
-            self, app_name:str, table_name:str, hash_dict:Dict, range_dict:Dict, attrs:List,
-            read_throughput:int=5, write_throughput:int=5):
+            self, app_name:str, table_name:str, hash_dict:Dict, attrs:List,
+            range_dict:Dict=None, read_throughput:int=5, write_throughput:int=5):
         """
             attrs = [
                 {
@@ -28,21 +28,26 @@ class DynamoDB(object):
         dynamodb = self.conn
 
         table_name = make_table_name(app_name, table_name)     
-        attrs += [hash_dict, range_dict]
+        attrs += [hash_dict]
+        key_schema = [
+            {
+                'AttributeName': hash_dict['AttributeName'],
+                'KeyType': 'HASH'
+            }
+        ]
 
+        if range_dict is not None:
+            attrs += [range_dict]
+            key_schema =+ [
+                {
+                    'AttributeName': range_dict['AttributeName'],
+                    'KeyType': 'Range'
+                }
+            ]
         table = dynamodb.create_table(
                 TableName=table_name,
                 AttrebuteDefinitions=attr,
-                KeySchema=[
-                    {
-                        'AttributeName': hash_dict['AttributeName'],
-                        'KeyType': 'HASH'
-                    },
-                    {
-                        'AttributeName': range_dict['AttributeName'],
-                        'KeyType': 'RANGE'
-                    }
-                ],
+                KeySchema=key_schema,
                 ProvisionedThroughput={
                     'ReadCapacityUnits': read_throughput,
                     'WriteCapacityUnits': write_throughput
@@ -99,58 +104,12 @@ class DynamoDB(object):
             return True
         return False 
 
-    def query_item(
-        self, app_name:str, table_name:str, sort_key: Dict, partition_key:Dict,
-        index_name=None, total_items=None, start_key=None, table=None
-    ):
-
-    if not table:
-        dynamodb = self.conn 
-        table_name = make_table_name(app_name, table_name)
-        table = dynmodb.Table(table_name)
-    
-    sk = sort_key['name']
-    skv = sort_key['value']
-    pk = partition_key['name']
-    pkv = partition_key['value']
-    if not start_key:
-        if index_name:
-            response = table.query(
-                IndexName=index_name,
-                KeyConditionExpression=Key(sk).eq(skv) &
-                Key(pk).eq(pkv)
-            )
-        else:
-            response = table.query(
-                KeyConditionExpression=Key(sk).eq(skv) &
-                Key(pk).eq(pkv)
-            )
-    else:
-        if index_name:
-            response = table.query(
-                IndexName=index_name,
-                KeyConditionExpression=Key(sk).eq(skv) &
-                Key(pk).eq(pkv),
-                ExclusiveStartKey=start_key
-            )
-        else:
-            response = table.query(
-                KeyConditionExpression=Key(sk).eq(skv) &
-                Key(pk).eq(pkv),
-                ExclusiveStartKey=start_key
-            )
-            
-    if not total_items:
-        total_items = response['Items']
-    else:
-        total_items.extend(response['Items'])
-
-    if response.get('LastEvaluatedKey'):
-        start_key = response['LastEvaluatedKey']
-        return_items = self.query_item(
-            table_name=table_name, sort_key=sort_key,
-            partition_key=partition_key, total_items=total_items,
-            start_key=start_key, table=table
+    def query_item(self, app_name:str, table_name:str, partition_key:Dict):
+        pk = partition_key['name']
+        pkv = partition_key['value']
+        response = table.query(
+            KeyConditionExpression=Key(pk).eq(pkv)
         )
-        return return_items
-    return total_item
+        items = response['Items']
+
+        return items
