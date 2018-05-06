@@ -15,13 +15,13 @@ def create_user_table():
         'AttributeName': 'id',
         'AttributeType': 'S'
     }
-    attrs = [
-        {
-            'AttributeName': 'auth_key',
-            'AttributeType': 'S'
-        }
-    ]
 
+    range_dict = {
+        'AttributeName': 'auth_key',
+        'AttributeType': 'S'
+    }
+
+    attrs = []
     table = db.create_table(APP_NAME, table_name, hash_dict, attrs)
     print(table)
 
@@ -34,6 +34,9 @@ def create_recording_table():
         'AttributeName': 'user_id',
         'AttributeType': 'S'
     }
+
+    # KeySchema에 없는 내용을 AtrributeDefinitions에 넣을 경우 Index를 만들어줘야함
+    """
     attrs = [
         {
             'AttributeName': 'created_at',
@@ -48,7 +51,9 @@ def create_recording_table():
             'AttributeType': 'S'
         },
     ]
+    """
 
+    attrs = []
     table = db.create_table(APP_NAME, table_name, hash_dict, attrs)
     print(table)
 

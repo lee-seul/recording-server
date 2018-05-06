@@ -16,7 +16,7 @@ class DynamoDB(object):
 
     def create_table(
             self, app_name:str, table_name:str, hash_dict:Dict, attrs:List,
-            range_dict:Dict=None, read_throughput:int=5, write_throughput:int=5):
+            range_dict:Dict=None, read_throughput:int=1, write_throughput:int=1):
         """
             attrs = [
                 {
@@ -41,13 +41,13 @@ class DynamoDB(object):
             key_schema =+ [
                 {
                     'AttributeName': range_dict['AttributeName'],
-                    'KeyType': 'Range'
+                    'KeyType': 'RANGE'
                 }
             ]
         table = dynamodb.create_table(
                 TableName=table_name,
-                AttributeDefinitions=attrs,
                 KeySchema=key_schema,
+                AttributeDefinitions=attrs,
                 ProvisionedThroughput={
                     'ReadCapacityUnits': read_throughput,
                     'WriteCapacityUnits': write_throughput
@@ -104,7 +104,7 @@ class DynamoDB(object):
             return True
         return False 
 
-    def query_item(self, app_name:str, table_name:str, partition_key:Dict):
+    def query_item(self, app_name:str, table_name:str, partition_key:Dict, sort_key:Dict=None):
         dynamodb = self.conn
 
         table_name = make_table_name(app_name, table_name)
@@ -112,9 +112,19 @@ class DynamoDB(object):
 
         pk = partition_key['name']
         pkv = partition_key['value']
-        response = table.query(
-            KeyConditionExpression=Key(pk).eq(pkv)
-        )
+
+        if range_key is None:
+            response = table.query(
+                KeyConditionExpression=Key(pk).eq(pkv)
+            )
+        else:
+            sk = sort_key['name']
+            skv = sort_key['value']
+            response = table.query(
+                KeyConditionExpression=Key(sk).eq(skv) &
+                Key(pk).eq(pkv)
+            )            
+        
         items = response['Items']
 
         return items
