@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-from typing import Dict
+from typing import Dict, List
 
 
 def make_table_name(app_name:str, table_name:str):

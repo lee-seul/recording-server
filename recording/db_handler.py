@@ -3,7 +3,7 @@
 
 from typing import Dict, List
 
-from .utils import make_table_name, make_update_expr
+from utils import make_table_name, make_update_expr
 
 import boto3 
 from boto3.dynamodb.conditions import Key
@@ -46,7 +46,7 @@ class DynamoDB(object):
             ]
         table = dynamodb.create_table(
                 TableName=table_name,
-                AttrebuteDefinitions=attr,
+                AttributeDefinitions=attrs,
                 KeySchema=key_schema,
                 ProvisionedThroughput={
                     'ReadCapacityUnits': read_throughput,
