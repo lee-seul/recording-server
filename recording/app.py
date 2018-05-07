@@ -3,6 +3,7 @@
 
 from chalice import Chalice, Response
 
+from chalicelib.auth import check_authorization
 from chalicelib.helpers import sign_up_or_login
 from chalicelib.utils import make_user_id
 
@@ -32,3 +33,20 @@ def login():
     return Response(body=data, status_code=200)
 
 
+@app.route('/record', methods=['POST'])
+def record_save():
+    request = app.current_request
+
+    user = check_authorization(request)
+    if user is None:
+        return Response(status_code=401)
+
+
+@app.route('/record/{record_id}', methods=['DELETE'])
+def record_delete(record_id):
+    request = app.current_request
+
+
+@app.route('record/list', methods=['GET'])
+def record_list():
+    request = app.current_request
