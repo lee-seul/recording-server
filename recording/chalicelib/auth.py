@@ -5,6 +5,9 @@ from chalicelib.db_handler import DynamoDB
 
 
 def check_authorization(request):
+    if not 'Authorization' in request.headers:
+        return False
+    
     user_id, auth_key = request.headers['Authorization'].split()
 
     db = DynamoDB()
