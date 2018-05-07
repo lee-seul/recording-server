@@ -37,15 +37,17 @@ def save_record(file_name:str, user_id: str, body):
     with open(tmp_file_name, 'wb') as tmp_file:
         tmp_file.write(body)
 
-    s3_client = boto3.client('S3')
+    s3_client = boto3.client('s3')
     
     now = datetime.datetime.now()
 
     s3_file_name = 'record/{}_{}'.format(user_id, now.strftime('%Y-%m-%d_%H:%M:%S'))
-    s3_client.upload_file(tmp_file,name, BUCKET, s3_file_name)
+    s3_client.upload_file(tmp_file_name, BUCKET, s3_file_name)
     s3_client.put_object_acl(ACL='public-read', Bucket=BUCKET, Key=s3_file_name)
 
-    url = 'https://s3.ap-northeast-2.amazonaws.com/%s/%s' % (BUCKET, s3_key)
+    url = 'https://s3.ap-northeast-2.amazonaws.com/%s/%s' % (BUCKET, s3_file_name)
+
+    db = DynamoDB()
 
     result = db.insert_item(
         'recording',

@@ -60,7 +60,7 @@ def record_save(file_name):
             headers={'Content-Type': 'application/json'}
             )
     
-    if user in False:
+    if user is False:
         data = {'error': 'Authorization Header is required.'}
         return Response(
             body=data,
