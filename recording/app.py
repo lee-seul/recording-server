@@ -47,7 +47,7 @@ def login():
         )
 
 
-@app.route('/record/{file_name}', methods=['PUT'], content_types=['application/octet-stream'])
+@app.route('/upload/record/{file_name}', methods=['PUT'], content_types=['application/octet-stream'])
 def record_save(file_name):
     request = app.current_request
 
@@ -93,7 +93,7 @@ def record_delete(record_id):
             )
 
 
-@app.route('record/list', methods=['GET'])
+@app.route('/record/list', methods=['GET'])
 def record_list():
     request = app.current_request
     user = check_authorization(request)
