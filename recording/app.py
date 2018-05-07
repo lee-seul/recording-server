@@ -3,8 +3,8 @@
 
 from chalice import Chalice, Response
 
-from helpers import sign_up_or_login
-from utils import make_user_id
+from chalicelib.helpers import sign_up_or_login
+from chalicelib.utils import make_user_id
 
 
 app = Chalice(app_name='recording')

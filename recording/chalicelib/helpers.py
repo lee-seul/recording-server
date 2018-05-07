@@ -1,8 +1,8 @@
 # coding: utf-8 
 
 
-from db_handler import DynamoDB
-from utils import generate_key, make_user_id
+from chalicelib.db_handler import DynamoDB
+from chalicelib.utils import generate_key, make_user_id
 
 
 def sign_up_or_login(social_id:str, social_type:str):

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-from db_handler import DynamoDB
+from chalicelib.db_handler import DynamoDB
 
 
 APP_NAME = 'recording'
