@@ -22,7 +22,7 @@ def create_user_table():
     }
 
     attrs = []
-    table = db.create_table(APP_NAME, table_name, hash_dict, attrs)
+    table = db.create_table(APP_NAME, table_name, hash_dict, attrs, range_dict=range_dict)
     print(table)
 
 
@@ -31,6 +31,11 @@ def create_recording_table():
     table_name = 'recording' 
 
     hash_dict = {
+        'AttributeName': 'id',
+        'AttributeType': 'S',
+    }
+
+    range_dict = {
         'AttributeName': 'user_id',
         'AttributeType': 'S'
     }
@@ -54,7 +59,7 @@ def create_recording_table():
     """
 
     attrs = []
-    table = db.create_table(APP_NAME, table_name, hash_dict, attrs)
+    table = db.create_table(APP_NAME, table_name, hash_dict, attrs, range_dict=range_dict)
     print(table)
 
 
