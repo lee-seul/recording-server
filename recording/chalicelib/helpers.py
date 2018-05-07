@@ -41,7 +41,7 @@ def save_record(file_name:str, user_id: str, body):
     
     now = datetime.datetime.now()
 
-    s3_file_name = 'record/{}_{}'.format(user_id, now.strftime('%Y-%m-%d_%H:%M:%S'))
+    s3_file_name = 'record/{}_{}'.format(user_id, now.strftime('%Y-%m-%d_%H-%M-%S'))
     s3_client.upload_file(tmp_file_name, BUCKET, s3_file_name)
     s3_client.put_object_acl(ACL='public-read', Bucket=BUCKET, Key=s3_file_name)
 
