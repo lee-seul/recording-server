@@ -1,7 +1,12 @@
 # coding: utf-8
 
 
+import string
+import random
 from typing import Dict, List
+
+
+KEY_SOURCE = string.ascii_letters + string.digits
 
 
 def make_table_name(app_name:str, table_name:str):
@@ -21,3 +26,7 @@ def make_update_expr(update_data:List):
         expr_attr_values[key] = data['value']
 
     return expr, expr_attr_values 
+
+
+def generate_key(n):
+    return ''.join(random.choice(KEY_SOURCE) for _ in range(n))
