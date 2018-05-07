@@ -4,6 +4,7 @@
 from chalice import Chalice, Response
 
 from helpers import sign_up_or_login
+from utils import make_user_id
 
 
 app = Chalice(app_name='recording')
@@ -20,10 +21,12 @@ def login():
         return Response(body=data, status_code=400)
 
     auth_key = sign_up_or_login(social_id, social_type)  
+    if not auth_key:
+        return Response(status_code=400)
 
     data = {
         'auth_key': auth_key,
-        'user_id': '{}_{}'.format(social_type, social_id)
+        'user_id': make_user_id(social_id, social_type)
     }
 
     return Response(body=data, status_code=200)

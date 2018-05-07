@@ -28,5 +28,9 @@ def make_update_expr(update_data:List):
     return expr, expr_attr_values 
 
 
-def generate_key(n):
+def generate_key(n:int):
     return ''.join(random.choice(KEY_SOURCE) for _ in range(n))
+
+
+def make_user_id(social_id:str, social_type:str):
+    return '{}_{}'.format(social_type, social_id)
