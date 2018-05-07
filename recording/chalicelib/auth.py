@@ -5,7 +5,7 @@ from chalicelib.db_handler import DynamoDB
 
 
 def check_authorization(request):
-    user_id, auth_key = request.headers['Authorization']
+    user_id, auth_key = request.headers['Authorization'].split()
 
     db = DynamoDB()
 
@@ -15,8 +15,6 @@ def check_authorization(request):
     }
 
     user = db.get_item('recording', 'user', query_item)
-    if not user:
-        return None
     return user
 
     

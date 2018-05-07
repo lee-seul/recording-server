@@ -23,7 +23,8 @@ def login():
 
     auth_key = sign_up_or_login(social_id, social_type)  
     if not auth_key:
-        return Response(status_code=400)
+        data = {'error': 'error'}
+        return Response(body=data, status_code=400)
 
     data = {
         'auth_key': auth_key,
@@ -39,7 +40,8 @@ def record_save():
 
     user = check_authorization(request)
     if user is None:
-        return Response(status_code=401)
+        data = {'error': 'Unauthorization'}
+        return Response(body=data, status_code=401)
 
 
 @app.route('/record/{record_id}', methods=['DELETE'])

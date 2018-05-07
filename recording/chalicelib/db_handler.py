@@ -73,6 +73,10 @@ class DynamoDB(object):
         table = dynamodb.Table(table_name)
 
         response = table.get_item(Key=query_item)
+
+        if not 'Item' in response:
+            return None
+            
         item = response['Item']
         return item
 
