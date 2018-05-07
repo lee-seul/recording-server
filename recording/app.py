@@ -8,9 +8,9 @@ from chalicelib.utils import make_user_id
 
 
 app = Chalice(app_name='recording')
+app.debug = True
 
-
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def login():
     request = app.current_request
     
