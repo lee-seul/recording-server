@@ -15,7 +15,7 @@ def sign_up_or_login(social_id:str, social_type:str):
     table_name = 'user'
 
     item = {
-        'user_id': user_id,
+        'id': user_id,
         'auth_key': auth_key
     }
 
