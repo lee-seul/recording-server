@@ -38,7 +38,7 @@ class DynamoDB(object):
 
         if range_dict is not None:
             attrs += [range_dict]
-            key_schema =+ [
+            key_schema += [
                 {
                     'AttributeName': range_dict['AttributeName'],
                     'KeyType': 'RANGE'
