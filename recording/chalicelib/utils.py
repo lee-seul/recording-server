@@ -35,9 +35,3 @@ def generate_key(n:int):
 def make_user_id(social_id:str, social_type:str):
     return '{}_{}'.format(social_type, social_id)
 
-
-def num_to_int(num):
-    try:
-        return int(num)
-    except:
-        return None
