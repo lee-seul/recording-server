@@ -3,8 +3,8 @@
 
 from chalice import Chalice, Response
 
-from chalicelib.auth import check_authorization
-from chalicelib.helpers import sign_up_or_login, save_record
+from chalicelib.auth import check_authorization, not_authorization_response
+from chalicelib.helpers import sign_up_or_login, save_record, get_recording
 from chalicelib.utils import make_user_id
 
 
@@ -24,7 +24,7 @@ def login():
             body=data, 
             status_code=400, 
             headers={'Content-Type': 'application/json'}
-            )
+        )
 
     auth_key = sign_up_or_login(social_id, social_type)  
     if not auth_key:
@@ -33,7 +33,7 @@ def login():
             body=data, 
             status_code=400,
             headers={'Content-Type': 'application/json'}
-            )
+        )
 
     data = {
         'auth_key': auth_key,
@@ -44,7 +44,7 @@ def login():
         body=data, 
         status_code=200,
         headers={'Content-Type': 'application/json'}
-        )
+    )
 
 
 @app.route('/upload/record/{file_name}', methods=['PUT'], content_types=['application/octet-stream'])
@@ -52,21 +52,8 @@ def record_save(file_name):
     request = app.current_request
 
     user = check_authorization(request)
-    if user is None:
-        data = {'error': 'Unauthorization'}
-        return Response(
-            body=data, 
-            status_code=401,
-            headers={'Content-Type': 'application/json'}
-            )
-    
-    if user is False:
-        data = {'error': 'Authorization Header is required.'}
-        return Response(
-            body=data,
-            status_code=400,
-            headers={'Content-Type': 'application/json'}
-        )
+    if not user:
+        return not_authorization_response(user)
 
     body = app.current_request.raw_body
     result = save_record(file_name, user['id'], body)
@@ -77,30 +64,35 @@ def record_save(file_name):
         body=data, 
         status_code=200,
         headers={'Content-Type': 'application/json'}
-        )
+    )
 
 
 @app.route('/record/{record_id}', methods=['DELETE'])
 def record_delete(record_id):
     request = app.current_request
     user = check_authorization(request)
-    if user is None:
-        data = {'error': 'Unauthorization'}
+    if not user:
+        return not_authorization_response(user)
+
+    result = delete_recording(record_id, user['id'])
+
+    if not result:
+        data = {'result': 'fail'}
         return Response(
-            body=data, 
-            status_code=401,
+            body=data,
+            status_code=400,
             headers={'Content-Type': 'application/json'}
-            )
+        )    
+    return Response(
+        body={'result': 'success'},
+        status_code=200,
+        headers={'Content-Type': 'application/json'}
+    )    
 
 
 @app.route('/record/list', methods=['GET'])
 def record_list():
     request = app.current_request
     user = check_authorization(request)
-    if user is None:
-        data = {'error': 'Unauthorization'}
-        return Response(
-            body=data, 
-            status_code=401,
-            headers={'Content-Type': 'application/json'}
-            )
+    if not user:
+        return not_authorization_response(user)

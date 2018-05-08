@@ -5,7 +5,9 @@ import datetime
 from typing import Dict
 
 from chalicelib.db_handler import DynamoDB
-from chalicelib.utils import generate_key, make_user_id
+from chalicelib.utils import (
+    generate_key, make_user_id, num_to_int
+)
 
 import boto3
 
@@ -66,3 +68,27 @@ def save_record(file_name:str, user_id: str, body):
     if result:
         return True
     return False
+
+
+def get_recording(record_id:int, user_id:int):
+    record_id = num_to_int(record_id)
+    if record_id is None:
+        return None
+    
+    db = DynamoDB()
+
+    app_name = 'recording'
+    table_name = 'recording'
+
+    item = {
+        'id': record_id,
+        'user_id': user_id
+    }
+
+    result = db.delete_item(app_name, table_name, item)
+    if result:
+        BUCKET = 'record-file-seul'
+        s3 = boto3.resource('s3')
+        s3.Object(BUCKET, key=record_id).delete()
+        return True
+    return False 
