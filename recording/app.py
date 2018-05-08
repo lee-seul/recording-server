@@ -100,8 +100,13 @@ def record_list():
         return not_authorization_response(user)
 
     records = get_records(user)
+
+    data = {
+        'records': records
+    }
+
     return Response(
-        body=records,
+        body=data,
         status_code=200,
         headers={'Content-Type': 'application/json'}
     )

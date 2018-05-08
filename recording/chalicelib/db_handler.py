@@ -132,3 +132,19 @@ class DynamoDB(object):
         items = response['Items']
 
         return items
+
+    def query_item_by_sort_key(self, app_name, table_name, sort_key):
+        dynamodb = self.conn
+
+        table_name = make_table_name(app_name, table_name)
+        table = dynamodb.Table(table_name) 
+
+        response = table.query(
+            KeyConditionExpression=Key(sort_key['name']).eq(sort_key['value'])
+        )
+
+        items = []
+        if 'Items' in response:
+            items = response['Items']
+        
+        return items 

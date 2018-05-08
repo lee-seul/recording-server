@@ -98,13 +98,11 @@ def delete_recording(record_id:int, user_id:int):
 
 def get_records(user):
     db = DynamoDB()
-    table = db.Table('recording_recording')
-    response = table.query(
-        KeyConditionExpression=Key('user_id').eq(user['id'])
+    return db.query_item_by_sort_key(
+        'recording',
+        'recording',
+        {
+            'name': 'user_id',
+            'value': user['id']
+        }
     )
-
-    items = []
-    if 'Items' in response:
-        items = response['Items']
-    
-    return items
