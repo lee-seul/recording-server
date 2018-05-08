@@ -1,2 +1,2 @@
 # recording-server
-chalice, serverless 구현  
+Python Serverless Microframework 사용
