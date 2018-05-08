@@ -10,6 +10,7 @@ from chalicelib.utils import (
 )
 
 import boto3
+from boto3.dynamodb.conditions import Key
 
 
 def sign_up_or_login(social_id:str, social_type:str):
@@ -70,7 +71,7 @@ def save_record(file_name:str, user_id: str, body):
     return False
 
 
-def get_recording(record_id:int, user_id:int):
+def delete_recording(record_id:int, user_id:int):
     record_id = num_to_int(record_id)
     if record_id is None:
         return None
@@ -92,3 +93,17 @@ def get_recording(record_id:int, user_id:int):
         s3.Object(BUCKET, key=record_id).delete()
         return True
     return False 
+
+
+def get_records(user):
+    db = DynamoDB()
+    table = db.Table('recording_recording')
+    response = table.query(
+        KeyConditionExpression=Key('user_id').eq(user['id'])
+    )
+
+    items = []
+    if 'Items' in response:
+        items = response['Items']
+    
+    return items

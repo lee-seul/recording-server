@@ -4,7 +4,9 @@
 from chalice import Chalice, Response
 
 from chalicelib.auth import check_authorization, not_authorization_response
-from chalicelib.helpers import sign_up_or_login, save_record, get_recording
+from chalicelib.helpers import (
+    sign_up_or_login, save_record, delete_recording, get_records
+)
 from chalicelib.utils import make_user_id
 
 
@@ -96,3 +98,10 @@ def record_list():
     user = check_authorization(request)
     if not user:
         return not_authorization_response(user)
+
+    records = get_records(user)
+    return Response(
+        body=records,
+        status_code=200,
+        headers={'Content-Type': 'application/json'}
+    )
