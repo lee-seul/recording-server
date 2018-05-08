@@ -90,7 +90,7 @@ def delete_recording(record_id:int, user_id:int):
         BUCKET = 'record-file-seul'
         s3 = boto3.resource('s3')
 
-        s3_key = 'recording/{}'.format(record_id)
+        s3_key = 'record/{}'.format(record_id)
         s3.Object(BUCKET, key=s3_key).delete()
         return True
     return False 
