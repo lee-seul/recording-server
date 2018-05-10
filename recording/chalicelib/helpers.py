@@ -98,7 +98,7 @@ def delete_recording(record_id:int, user_id:int):
 
 def get_records(user):
     db = DynamoDB()
-    return db.query_item_by_sort_key(
+    return db.scan_item(
         'recording',
         'recording',
         {

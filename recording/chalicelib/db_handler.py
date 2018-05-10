@@ -6,7 +6,7 @@ from typing import Dict, List
 from chalicelib.utils import make_table_name, make_update_expr
 
 import boto3 
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr, Key
 
 
 class DynamoDB(object):
@@ -131,4 +131,19 @@ class DynamoDB(object):
         
         items = response['Items']
 
+        return items
+
+    def scan_item(self, app_name:str, table_name:str, attr_dict:Dict):
+        dynamodb = self.conn 
+
+        table_name = make_table_name(app_name, table_name)
+        table = dynamodb.Table(table_name)
+
+        response = table.scan(
+            FilterExpression=Attr(attr_dict['name']).eq(attr_dict['value'])
+        )
+
+        items = []
+        if 'Items' in response:
+            items = response['Items']
         return items
