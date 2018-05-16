@@ -28,7 +28,7 @@ def sign_up_or_login(social_id:str, social_type:str):
 
     users = db.scan_item(app_name, table_name, query_item)
     if users:
-        return user[0]['auth_key']
+        return users[0]['auth_key']
 
     auth_key = generate_key(64)
     item = {

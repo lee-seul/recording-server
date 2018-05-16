@@ -62,6 +62,7 @@ def record_save(file_name):
     data = {'result': 'success'}
     if not result:
         data['result'] = 'fail'
+
     return Response(
         body=data, 
         status_code=200,
