@@ -14,14 +14,23 @@ from boto3.dynamodb.conditions import Key
 
 
 def sign_up_or_login(social_id:str, social_type:str):
-    user_id = make_user_id(social_id, social_type)
-    auth_key = generate_key(64)
-
     db = DynamoDB()
 
     app_name = 'recording'
     table_name = 'user'
 
+    user_id = make_user_id(social_id, social_type)
+
+    query_item = {
+        'name': 'id',
+        'value': user_id
+    }
+
+    users = db.scan_item(app_name, table_name, query_item)
+    if users:
+        return user[0]['auth_key']
+
+    auth_key = generate_key(64)
     item = {
         'id': user_id,
         'auth_key': auth_key
